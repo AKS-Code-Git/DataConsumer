@@ -14,17 +14,10 @@ import java.util.Properties;
 @Service
 public class KafkaMsgProducer {
 
-//    private static final String TOPIC= "apac_topic3";
     private static final Logger log = LoggerFactory.getLogger(KafkaMsgProducer.class);
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
-
-//    public void writeMessage(String msg){
-//        log.info( "\ngetConfigurationProperties : " + this.kafkaTemplate.getProducerFactory().getConfigurationProperties());
-//        this.kafkaTemplate.send(TOPIC, msg);
-//    }
-
     public void sendMessage(String msg, String topic, String bootStrap){
 
         // Set up the producer properties
@@ -36,13 +29,9 @@ public class KafkaMsgProducer {
         Producer<String, String> producer = null;
 
         try {
-            // Create the producer
             producer = new KafkaProducer<>(props);
-
-            // Create a producer record
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key", msg);
             log.info("Message : "+ msg + " : Writing to topic :" + topic);
-            // Send the record with a callback to handle exceptions
             producer.send(record, new Callback() {
                 @Override
                 public void onCompletion(RecordMetadata metadata, Exception exception) {
@@ -54,11 +43,8 @@ public class KafkaMsgProducer {
                     }
                 }
             });
-
-        } catch (Exception e) {
-            log.error("Error creating or sending producer: " + e.getMessage());
-        } finally {
-            // Close the producer
+        }
+        finally {
             if (producer != null) {
                 try {
                     producer.close();
