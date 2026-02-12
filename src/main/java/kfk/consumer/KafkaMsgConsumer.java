@@ -30,7 +30,7 @@ public class KafkaMsgConsumer {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             log.info("Record count :" + records.count());
             for (ConsumerRecord<String, String> record : records) {
-                log.info("Record : " + record.value());
+                log.info("################Record has been read : " + record.value());
             }
 ////                    }
         } finally {
