@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   zookeeper1:
     image: wurstmeister/zookeeper:latest
@@ -30,6 +28,16 @@ services:
       - 9000:9000
     depends_on:
       - kafka
+
+  app:
+    image: dc_api:1.0
+    container_name: spring-app
+    depends_on:
+      - kafka
+    ports:
+    - "8081:8081"
+
+
 
 #  docker compose -f docker—compose.yml up -d
 #  docker-compose up -d
