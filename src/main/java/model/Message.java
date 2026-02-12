@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Message {
 
     private String message;
+    private String topic;
 
     public void setMessage(String message) {
         this.message = message;
@@ -20,5 +21,13 @@ public class Message {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 }

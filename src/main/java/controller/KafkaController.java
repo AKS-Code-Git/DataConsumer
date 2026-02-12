@@ -1,9 +1,12 @@
 package controller;
 
+import config.AppConfig;
 import kfk.consumer.KafkaMsgConsumer;
 import kfk.producer.KafkaMsgProducer;
 import model.Message;
 import model.TopicProp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,36 +14,49 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import service.CreateTopic;
+import util.Constants;
 
 @RestController
 public class KafkaController {
+    private static final Logger log = LoggerFactory.getLogger(KafkaController.class);
     private final KafkaMsgProducer producer;
+
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrap;
+
+    @Value("${dev.bootStrap-server}")
+    private String devBootStrap;
+
     @Autowired
-    private CreateTopic ct;
+    private CreateTopic createTopic;
+
 
     public KafkaController(KafkaMsgProducer producer) {
         this.producer = producer;
     }
     @PostMapping("/publish")
     public void writeMessageToTopic(@RequestBody Message message) {
-        this.producer.sendMessage(message.getMessage());
+        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
+        this.producer.sendMessage(message.getMessage(),message.getTopic(),server);
     }
+
     @PostMapping("/createTopic")
     public void createTopic(@RequestBody TopicProp topicProp) {
-        ct = new CreateTopic();
-        ct.CreateNewTopic(topicProp, bootStrap);
+        String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
+        log.info("Server :" +server);
+        createTopic.CreateNewTopic(topicProp, server);
     }
+
     @PostMapping("/createAllTopics")
     public void createAllTopic() {
-        ct = new CreateTopic();
-        ct.createAllTopics ();
+        createTopic.createAllTopics ();
     }
+
     @GetMapping("/getMessage")
-    public void readMessageFromTopic() {
+    public void readMessageFromTopic(@RequestBody TopicProp topic) {
+        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
         KafkaMsgConsumer kms = new KafkaMsgConsumer();
-        kms.consumeMessage();
+        kms.consumeMessage(topic.getName(), server);
     }
 }
 

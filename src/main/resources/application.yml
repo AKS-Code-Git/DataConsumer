@@ -1,3 +1,5 @@
+dev:
+  bootStrap-server: localhost:9092
 server:
   port: 8081
 spring:

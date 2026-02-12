@@ -13,19 +13,19 @@ import java.util.Properties;
 @Service
 public class KafkaMsgConsumer {
     private static final Logger log = LoggerFactory.getLogger(KafkaMsgConsumer.class);
-    private static final String TOPIC = "apac_topic3";
+//    private static final String TOPIC = "apac_topic3";
 
-    public void consumeMessage() {
+    public void consumeMessage(String topic, String server) {
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:29092");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "Group1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         Consumer<String, String> consumer = null;
         try {
             consumer = new KafkaConsumer<>(props);
-            consumer.subscribe(Collections.singletonList(TOPIC));
-            log.info("Reading Message from topic :" + TOPIC);
+            consumer.subscribe(Collections.singletonList(topic));
+            log.info("Reading Message from topic :" + topic);
 //                while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             log.info("Record count :" + records.count());
