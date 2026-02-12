@@ -26,11 +26,10 @@ public class CreateTopic {
     private static final Logger log = LoggerFactory.getLogger(CreateTopic.class);
 
     public void CreateNewTopic(final TopicProp topicProp, final String bootStrap) {
-
-        log.info("Creating Topic :" + topicProp.toString());
-        log.info("BootStrap Server :" + bootStrap);
         Properties properties = new Properties();
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrap);
+        log.info("Creating Topic :" + topicProp.toString());
+        log.info("BootStrap Server :" + bootStrap);
         try (AdminClient adminClient = AdminClient.create(properties)) {
             NewTopic newTopic = new NewTopic(topicProp.getName(), topicProp.getPartitions(), topicProp.getReplica());
             CreateTopicsResult createTopicsResult = adminClient.createTopics(Collections.singleton(newTopic));
@@ -59,9 +58,9 @@ public class CreateTopic {
             log.info("FileNotFound Error " + e.getMessage());
         }
         if(path == null){
-            path= Constants.CURRENT_DIR+ "/config/topics.properties";
+            path= Constants.CONFIG_DIR + "/topics.properties";
         }
-        log.info("Constants.CURRENT_DIR : " + Constants.CURRENT_DIR);
+        log.info("Config directory : " + Constants.CONFIG_DIR);
         log.info("Absolute path :" + path );
 
         Map<String, String[]> topics = Util.readTopics(path);
@@ -69,18 +68,21 @@ public class CreateTopic {
             Iterator<String> keys = topics.keySet().iterator();
             while (keys.hasNext()) {
                 String[] t = topics.get(keys.next());
-                createTopic(t[0], Integer.parseInt(t[1]), Short.parseShort(t[2]));
+                createTopic(t[0], Integer.parseInt(t[1]), Short.parseShort(t[2]),t[3]);
             }
         }else {
             log.warn("Failed to find properties at :" + path);
         }
     }
 
-    private void createTopic(final String topicName, final int partitions, final short replicas) {
+    private void createTopic(final String topicName,
+                             final int partitions,
+                             final short replicas,
+                             final String bootStrap) {
         final TopicProp tp = new TopicProp();
         tp.setName(topicName);
         tp.setPartitions(partitions);
         tp.setReplica(replicas);
-        CreateNewTopic(tp,"localhost:9092");
+        CreateNewTopic(tp,bootStrap);
     }
 }
