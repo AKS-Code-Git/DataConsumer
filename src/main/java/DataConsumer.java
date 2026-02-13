@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages ={"config","controller","model","service","kfk.consumer","kfk.producer"})
+@ComponentScan(basePackages ={"config","controller","model","service","kfk.consumer","kfk.producer","controller.get","controller.post"})
 public class DataConsumer {
     public static void main(String[] args) {
         SpringApplication.run(DataConsumer.class, args);

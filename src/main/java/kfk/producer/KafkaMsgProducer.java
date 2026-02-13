@@ -43,15 +43,15 @@ public class KafkaMsgProducer {
         try {
             producer = new KafkaProducer<>(props);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key", msg);
-            log.info("Message : " + msg + " : Writing to topic :" + topic);
+            log.info("Message : {}  : Writing to topic : {}.", msg, topic);
             producer.send(record, new Callback() {
                 @Override
                 public void onCompletion(RecordMetadata metadata, Exception exception) {
                     if (exception != null) {
-                        log.error("Error sending record: " + exception.getMessage());
+                        log.error("Error sending record: {}", exception.getMessage());
                     } else {
-                        log.info("Record sent successfully to topic " + metadata.topic() +
-                                " partition " + metadata.partition() + " at offset " + metadata.offset());
+                        log.info("Record sent successfully to topic {}  partition {}  at offset {}."
+                                , metadata.topic(), metadata.partition(), metadata.offset());
                     }
                 }
             });
@@ -80,7 +80,7 @@ public class KafkaMsgProducer {
                 try {
                     log.info("File of bytes : {} : sent to topic : {}.", +file.readAllBytes().length, topic);
                 } catch (IOException e) {
-                    log.error("IOException occured : {}", e.getMessage());
+                    log.error("IOException occurred : {}", e.getMessage());
                 }
                 producer.send(record, new Callback() {
                     @Override
@@ -88,7 +88,7 @@ public class KafkaMsgProducer {
                         if (exception != null) {
                             log.error("Error sending record: {}", exception.getMessage());
                         } else {
-                            log.info("Record sent successfully to topic {}  partition {}  at offset  {}."
+                            log.info("File sent successfully to topic {}  partition {}  at offset  {}."
                                     , metadata.topic(), metadata.partition(), metadata.offset());
                         }
                     }

@@ -1,6 +1,5 @@
 package controller;
 
-import config.AppConfig;
 import kfk.consumer.KafkaMsgConsumer;
 import kfk.producer.KafkaMsgProducer;
 import model.Message;
@@ -17,7 +16,6 @@ import service.CreateTopic;
 import util.Constants;
 import util.SelectTopic;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
@@ -26,7 +24,9 @@ import java.io.InputStream;
 @RestController
 public class KafkaController {
     private static final Logger log = LoggerFactory.getLogger(KafkaController.class);
-    private final KafkaMsgProducer producer;
+
+    @Autowired
+    private KafkaMsgProducer producer;
 
     /**
      *
@@ -46,29 +46,25 @@ public class KafkaController {
     @Autowired
     private CreateTopic createTopic;
 
-
-    /**
-     * @param producer
-     */
-    public KafkaController(KafkaMsgProducer producer) {
-        this.producer = producer;
-    }
-
     /**
      * @param message
      */
     @PostMapping("/publish")
     public void writeMessageToTopic(@RequestBody Message message) {
-        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
-        this.producer.sendMessage(message.getMessage(),message.getTopic(),server);
+        final String server = Constants.CURRENT_DIR.indexOf("/app") < 0 ? devBootStrap : bootStrap;
+        this.producer.sendMessage(message.getMessage(), message.getTopic(), server);
     }
 
     /**
+     * Set the HTTP method to POST or PUT.
+     * Set the Content-Type header to multipart/form-data.
+     * Include necessary authentication headers.
+     *
      * @param file
      */
     @PostMapping("/sendCSfile")
     public void sendFile(@RequestBody InputStream file) {
-        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
+        final String server = Constants.CURRENT_DIR.indexOf("/app") < 0 ? devBootStrap : bootStrap;
         SelectTopic st = new SelectTopic();
         this.producer.sendCSfile(file, st.getTopic(), server);
     }
@@ -78,8 +74,8 @@ public class KafkaController {
      */
     @PostMapping("/createTopic")
     public void createTopic(@RequestBody TopicProp topicProp) {
-        String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
-        log.info("Server :" +server);
+        String server = Constants.CURRENT_DIR.indexOf("/app") < 0 ? devBootStrap : bootStrap;
+        log.info("Server :" + server);
         createTopic.CreateNewTopic(topicProp, server);
     }
 
@@ -88,7 +84,7 @@ public class KafkaController {
      */
     @PostMapping("/createAllTopics")
     public void createAllTopic() {
-        createTopic.createAllTopics ();
+        createTopic.createAllTopics();
     }
 
     /**
@@ -96,9 +92,8 @@ public class KafkaController {
      */
     @GetMapping("/getMessage")
     public void readMessageFromTopic(@RequestBody TopicProp topic) {
-        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
+        final String server = Constants.CURRENT_DIR.indexOf("/app") < 0 ? devBootStrap : bootStrap;
         KafkaMsgConsumer kms = new KafkaMsgConsumer();
         kms.consumeMessage(topic.getName(), server);
     }
 }
-
