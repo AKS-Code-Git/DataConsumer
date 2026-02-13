@@ -10,10 +10,17 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
+/**
+ *
+ */
 @Service
 public class KafkaMsgConsumer {
     private static final Logger log = LoggerFactory.getLogger(KafkaMsgConsumer.class);
 
+    /**
+     * @param topic
+     * @param server
+     */
     public void consumeMessage(String topic, String server) {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, server);

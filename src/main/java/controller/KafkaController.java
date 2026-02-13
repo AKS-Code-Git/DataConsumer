@@ -15,31 +15,67 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import service.CreateTopic;
 import util.Constants;
+import util.SelectTopic;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
+
+/**
+ *
+ */
 @RestController
 public class KafkaController {
     private static final Logger log = LoggerFactory.getLogger(KafkaController.class);
     private final KafkaMsgProducer producer;
 
+    /**
+     *
+     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootStrap;
 
+    /**
+     *
+     */
     @Value("${dev.bootStrap-server}")
     private String devBootStrap;
 
+    /**
+     *
+     */
     @Autowired
     private CreateTopic createTopic;
 
 
+    /**
+     * @param producer
+     */
     public KafkaController(KafkaMsgProducer producer) {
         this.producer = producer;
     }
+
+    /**
+     * @param message
+     */
     @PostMapping("/publish")
     public void writeMessageToTopic(@RequestBody Message message) {
         final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
         this.producer.sendMessage(message.getMessage(),message.getTopic(),server);
     }
 
+    /**
+     * @param file
+     */
+    @PostMapping("/sendCSfile")
+    public void sendFile(@RequestBody InputStream file) {
+        final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
+        SelectTopic st = new SelectTopic();
+        this.producer.sendCSfile(file, st.getTopic(), server);
+    }
+
+    /**
+     * @param topicProp
+     */
     @PostMapping("/createTopic")
     public void createTopic(@RequestBody TopicProp topicProp) {
         String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
@@ -47,11 +83,17 @@ public class KafkaController {
         createTopic.CreateNewTopic(topicProp, server);
     }
 
+    /**
+     *
+     */
     @PostMapping("/createAllTopics")
     public void createAllTopic() {
         createTopic.createAllTopics ();
     }
 
+    /**
+     * @param topic
+     */
     @GetMapping("/getMessage")
     public void readMessageFromTopic(@RequestBody TopicProp topic) {
         final String server = Constants.CURRENT_DIR.indexOf("/app")<0 ?devBootStrap:bootStrap;
