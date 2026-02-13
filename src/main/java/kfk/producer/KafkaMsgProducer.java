@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import util.Util;
 
 
+import java.util.Map;
 import java.util.Properties;
 
 @Service
@@ -18,16 +20,16 @@ public class KafkaMsgProducer {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
-    public void sendMessage(String msg, String topic, String bootStrap){
 
+    public void sendMessage(String msg, String topic, String bootStrap){
         // Set up the producer properties
         Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrap);
-        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        final Map<String, String> serializer= Util.getSerializable("String");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, serializer.get("key"));
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, serializer.get("value"));
 
         Producer<String, String> producer = null;
-
         try {
             producer = new KafkaProducer<>(props);
             ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key", msg);
@@ -46,11 +48,7 @@ public class KafkaMsgProducer {
         }
         finally {
             if (producer != null) {
-                try {
-                    producer.close();
-                } catch (Exception e) {
-                    log.error("Error closing producer: " + e.getMessage());
-                }
+                producer.close();
             }
         }
     }

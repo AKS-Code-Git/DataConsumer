@@ -13,7 +13,6 @@ import java.util.Properties;
 @Service
 public class KafkaMsgConsumer {
     private static final Logger log = LoggerFactory.getLogger(KafkaMsgConsumer.class);
-//    private static final String TOPIC = "apac_topic3";
 
     public void consumeMessage(String topic, String server) {
         Properties props = new Properties();
@@ -26,13 +25,11 @@ public class KafkaMsgConsumer {
             consumer = new KafkaConsumer<>(props);
             consumer.subscribe(Collections.singletonList(topic));
             log.info("Reading Message from topic :" + topic);
-//                while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             log.info("Record count :" + records.count());
             for (ConsumerRecord<String, String> record : records) {
                 log.info("################Record has been read : " + record.value());
             }
-////                    }
         } finally {
             if (consumer != null) {
                 try {

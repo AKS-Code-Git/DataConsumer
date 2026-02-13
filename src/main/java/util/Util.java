@@ -1,5 +1,6 @@
 package util;
 
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +31,17 @@ public final class Util {
             log.error(e.getMessage());
         }
         log.info("Properties : " + retVal);
+        return retVal;
+    }
+    public static Map<String,String> getSerializable(final String payLoadType){
+        final Map<String,String> retVal=new HashMap<String,String>();
+        switch (payLoadType){
+            case "String":
+                retVal.put("key", StringSerializer.class.getName());
+                retVal.put("value", StringSerializer.class.getName());
+                break;
+            case "File":
+        }
         return retVal;
     }
 }
