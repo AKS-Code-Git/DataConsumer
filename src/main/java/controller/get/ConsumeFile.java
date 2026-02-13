@@ -24,12 +24,6 @@ public class ConsumeFile {
      */
     @Value("${dev.bootStrap-server}")
     private String devBootStrap;
-    /**
-     * Set the HTTP method to POST or PUT.
-     * Set the Content-Type header to multipart/form-data.
-     * Include necessary authentication headers.
-     *
-     * @param file
-     */
+
 
 }

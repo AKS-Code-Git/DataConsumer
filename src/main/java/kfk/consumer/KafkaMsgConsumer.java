@@ -31,18 +31,18 @@ public class KafkaMsgConsumer {
         try {
             consumer = new KafkaConsumer<>(props);
             consumer.subscribe(Collections.singletonList(topic));
-            log.info("Reading Message from topic :" + topic);
+            log.info("Reading Message from topic : {}.", topic);
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
-            log.info("Record count :" + records.count());
+            log.info("Record count : {}.", records.count());
             for (ConsumerRecord<String, String> record : records) {
-                log.info("################Record has been read : " + record.value());
+                log.info("Message has been read : {}", record.value());
             }
         } finally {
             if (consumer != null) {
                 try {
                     consumer.close();
                 } catch (Exception e) {
-                    log.error("Error closing consumer: " + e.getMessage());
+                    log.error("Error closing consumer: {}", e.getMessage());
                 }
             }
         }

@@ -13,7 +13,6 @@ import org.springframework.util.ResourceUtils;
 import util.Constants;
 import util.Util;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,20 +27,19 @@ public class CreateTopic {
     public void CreateNewTopic(final TopicProp topicProp, final String bootStrap) {
         Properties properties = new Properties();
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrap);
-        log.info("Creating Topic :" + topicProp.toString());
-        log.info("BootStrap Server :" + bootStrap);
+        log.info("Creating Topic : {}", topicProp.toString());
+        log.info("BootStrap Server : {}", bootStrap);
         try (AdminClient adminClient = AdminClient.create(properties)) {
             NewTopic newTopic = new NewTopic(topicProp.getName(), topicProp.getPartitions(), topicProp.getReplica());
             CreateTopicsResult createTopicsResult = adminClient.createTopics(Collections.singleton(newTopic));
             try {
                 createTopicsResult.values().get(topicProp.getName()).get();
-                log.info("Topic \"" + topicProp.toString() + "\" created successfully!");
+                log.info("Topic \"{}\" created successfully.", topicProp);
             } catch (ExecutionException e) {
-                // Check if the exception is due to the topic already existing
                 if (e.getCause() instanceof TopicExistsException) {
-                    log.warn("Topic \"" + topicProp.getName() + "\" already exists.");
+                    log.warn("Topic \"{}\" already exists." + topicProp.getName());
                 } else {
-                    log.error("Failed to create topic: " + e.getMessage(), e);
+                    log.error("Failed to create topic: {}", e.getMessage(), e);
                 }
 
             } catch (InterruptedException e) {
@@ -51,27 +49,27 @@ public class CreateTopic {
     }
 
     public void createAllTopics() {
-        String   path = null;
+        String path = null;
         try {
             path = ResourceUtils.getFile("classpath:topics.properties").getAbsolutePath();
         } catch (FileNotFoundException e) {
-            log.info("FileNotFound Error " + e.getMessage());
+            log.info("FileNotFound Error {}", e.getMessage());
         }
-        if(path == null){
-            path= Constants.CONFIG_DIR + "/topics.properties";
+        if (path == null) {
+            path = Constants.CONFIG_DIR + "/topics.properties";
         }
-        log.info("Config directory : " + Constants.CONFIG_DIR);
-        log.info("Absolute path :" + path );
+        log.info("Config directory : {}", Constants.CONFIG_DIR);
+        log.info("Absolute path : {}", path);
 
         Map<String, String[]> topics = Util.readTopics(path);
-        if(topics!=null) {
+        if (topics != null) {
             Iterator<String> keys = topics.keySet().iterator();
             while (keys.hasNext()) {
                 String[] t = topics.get(keys.next());
-                createTopic(t[0], Integer.parseInt(t[1]), Short.parseShort(t[2]),t[3]);
+                createTopic(t[0], Integer.parseInt(t[1]), Short.parseShort(t[2]), t[3]);
             }
-        }else {
-            log.warn("Failed to find properties at :" + path);
+        } else {
+            log.warn("Failed to find properties at : {}", path);
         }
     }
 
@@ -83,6 +81,6 @@ public class CreateTopic {
         tp.setName(topicName);
         tp.setPartitions(partitions);
         tp.setReplica(replicas);
-        CreateNewTopic(tp,bootStrap);
+        CreateNewTopic(tp, bootStrap);
     }
 }

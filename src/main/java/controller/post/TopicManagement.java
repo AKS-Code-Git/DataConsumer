@@ -37,7 +37,7 @@ public class TopicManagement {
     @PostMapping("/createTopic")
     public void createTopic(@RequestBody TopicProp topicProp) {
         String server = Constants.CURRENT_DIR.indexOf("/app") < 0 ? devBootStrap : bootStrap;
-        log.info("Server :" + server);
+        log.info("Server : {}", server);
         createTopic.CreateNewTopic(topicProp, server);
     }
 
