@@ -8,7 +8,7 @@ logging:
 dev:
   bootStrap-server: localhost:9092
 server:
-  port: 8082
+  port: 8081
 spring:
   kafka:
     bootstrap-servers: kafka:29092
