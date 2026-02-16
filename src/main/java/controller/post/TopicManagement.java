@@ -1,6 +1,5 @@
 package controller.post;
 
-import controller.KafkaController;
 import model.TopicProp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import util.Constants;
 
 @RestController
 public class TopicManagement {
-    private static final Logger log = LoggerFactory.getLogger(KafkaController.class);
+    private static final Logger log = LoggerFactory.getLogger(TopicManagement.class);
     /**
      *
      */
