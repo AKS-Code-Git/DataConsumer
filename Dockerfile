@@ -11,7 +11,7 @@ COPY src/main/resources/topics.properties /app/config/topics.properties
 ENTRYPOINT ["java", "-jar", "dataconsumer-1.0.jar"]
 
 # docker run -p 8081:8081 dataconsumer:1.0
-#docker build -t dataconsumer:1.0 .
+#docker build -t dc_api:1.0 .
 
 
-#docker run --name DC_API -p 8081:8081 dataconsumer:1.0
+#docker run --name dc_api -p 8081:8081 dc_api:1.0

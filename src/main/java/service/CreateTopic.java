@@ -29,6 +29,7 @@ public class CreateTopic {
         properties.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootStrap);
         log.info("Creating Topic : {}", topicProp.toString());
         log.info("BootStrap Server : {}", bootStrap);
+        log.info("properties : {}", properties);
         try (AdminClient adminClient = AdminClient.create(properties)) {
             NewTopic newTopic = new NewTopic(topicProp.getName(), topicProp.getPartitions(), topicProp.getReplica());
             CreateTopicsResult createTopicsResult = adminClient.createTopics(Collections.singleton(newTopic));
